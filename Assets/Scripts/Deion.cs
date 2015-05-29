@@ -21,8 +21,8 @@ public class Deion : MonoBehaviour {
 
 		velocity = new Vector3();
 		terminalVelocity = 0;
-		constantTerminalV = 10;
-		accelRate = 5;
+		constantTerminalV = 6;
+		accelRate = 8;
 
 		renderer = gameObject.GetComponent<SpriteRenderer>();
 		renderer.sprite = north;
@@ -30,8 +30,26 @@ public class Deion : MonoBehaviour {
 		stoppingX = true;
 		stoppingY = true;
 	}
+	public void moveRight(bool fromController, float angle){
+
+		Debug.Log ("Right");
+		if(!fromController){
+			this.angle = angle;
+		}
+		
+		flipX (true);
+		
+		stoppingX = false;
+		this.renderer.sprite = this.east;
+		
+		if(accelRate < 0)
+			accelRate *= -1;
+
+	}
 
 	public void moveLeft(bool fromController, float angle){
+
+		Debug.Log ("Left");
 
 		if(!fromController){
 			this.angle = angle;
@@ -45,6 +63,37 @@ public class Deion : MonoBehaviour {
 		if(accelRate < 0)
 			accelRate *= -1;
 
+	}
+
+	public void moveUp(bool fromController, float angle){
+		Debug.Log ("Up");
+
+		if(!fromController){
+			this.angle = angle;
+		}
+		
+
+		stoppingY = false;
+		this.renderer.sprite = this.north;
+		
+		if(accelRate < 0)
+			accelRate *= -1;
+		
+	}
+
+	public void moveDown(bool fromController, float angle){
+		Debug.Log ("Down");
+		if(!fromController){
+			this.angle = angle;
+		}
+		
+
+		stoppingY = false;
+		this.renderer.sprite = this.south;
+		
+		if(accelRate < 0)
+			accelRate *= -1;
+		
 	}
 
 	public void stopMoveX(){
@@ -66,24 +115,101 @@ public class Deion : MonoBehaviour {
 			transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
 	}
 
-	public void flipY(bool facing){
-		facingNorth = facing;
 
-		if((facingNorth && transform.localScale.y < 0) || (!facingNorth && transform.localScale.y > 0))
-			transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * -1, transform.localScale.z);
+
+	void handleInput(){
+		bool leftArrow, rightArrow, upArrow, downArrow;
+		leftArrow = Input.GetKey(KeyCode.LeftArrow);
+		rightArrow = Input.GetKey(KeyCode.RightArrow);
+		upArrow = Input.GetKey(KeyCode.UpArrow);
+		downArrow = Input.GetKey(KeyCode.DownArrow);
+
+		//Handle Left Arrow being down
+		if(leftArrow && !rightArrow){
+
+			if(upArrow && !downArrow){
+				//Up Left
+			}
+
+			if(downArrow && !upArrow){
+				//Down left
+			}
+
+			if((downArrow && upArrow) || (!downArrow && !upArrow)){
+
+				moveLeft (false, Mathf.PI);
+			}
+		}
+
+		if(rightArrow && !leftArrow){
+
+				if(upArrow && !downArrow){
+					//Up Right
+				}
+				
+				if(downArrow && !upArrow){
+					//Down Right
+				}
+				
+				if((downArrow && upArrow) || (!downArrow && !upArrow)){
+					
+					moveRight (false, 0);
+				}
+		}
+
+		//Handle Left Arrow being down
+		if(upArrow && !downArrow){
+			
+			if(leftArrow && !rightArrow){
+				//Up Left
+			}
+			
+			if(rightArrow && !leftArrow){
+				//Down left
+
+			}
+			
+			if((leftArrow && rightArrow) || (!leftArrow && !rightArrow)){
+				
+				moveUp (false, Mathf.PI / 2);
+			}
+		}
+		
+		if(downArrow && !upArrow){
+			
+			if(leftArrow && !rightArrow){
+				//Up up
+			}
+			
+			if(rightArrow && !leftArrow){
+				//Down up
+			}
+			
+			if((leftArrow && rightArrow) || (!leftArrow && !rightArrow)){
+				
+				moveDown (false, Mathf.PI * 3 / 2);
+			}
+		}
+
+
+
+
+
+		if((!upArrow && !leftArrow) || (upArrow && leftArrow)){
+			stopMoveX();
+		}
+		if((!upArrow && !downArrow) || (upArrow && downArrow)){
+			stopMoveY();
+		}
+
 	}
-
 	// Update is called once per frame
 	void Update () {
 
-		if(Input.GetKey(KeyCode.LeftArrow)){
-			Debug.Log("asoetuhasoet");
-			moveLeft (false, Mathf.PI);
+		handleInput();
 
-		}else{
-			stopMoveX();
 
-		}
+
 
 
 
