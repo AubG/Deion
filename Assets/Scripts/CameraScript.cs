@@ -28,7 +28,7 @@ public class CameraScript : MonoBehaviour {
 		upArrow = Input.GetKey(KeyCode.W);
 		downArrow = Input.GetKey(KeyCode.S);
 		space = Input.GetKey (KeyCode.Space);
-		float pushMag = .08f;
+		float pushMag = magnitude;
 
 		if (leftArrow) {
 			pushX(-pushMag);
