@@ -22,7 +22,7 @@ public class Deion : MonoBehaviour {
 		velocity = new Vector3();
 		terminalVelocity = 0;
 		constantTerminalV = 6;
-		accelRate = 8;
+		accelRate = 15;
 
 		renderer = gameObject.GetComponent<SpriteRenderer>();
 		renderer.sprite = north;
