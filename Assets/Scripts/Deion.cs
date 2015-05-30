@@ -33,8 +33,9 @@ public class Deion : MonoBehaviour {
 		renderer.sprite = north;
 		direction = DIRECTION.up;
 
+		Debug.Log (Input.GetJoystickNames().Length);
+
 		if(Input.GetJoystickNames().Length > 0){
-			Debug.Log ("It ain't zero");
 
 			usingController = true;
 		}
