@@ -195,7 +195,7 @@ public class Deion : MonoBehaviour {
 
 
 
-		if((!upArrow && !leftArrow) || (upArrow && leftArrow)){
+		if((!rightArrow && !leftArrow) || (rightArrow && leftArrow)){
 			stopMoveX();
 		}
 		if((!upArrow && !downArrow) || (upArrow && downArrow)){
@@ -218,9 +218,8 @@ public class Deion : MonoBehaviour {
 		}
 
 
-		
 
-		if(terminalVelocity < constantTerminalV){
+		if(terminalVelocity < constantTerminalV || accelRate < 0){
 			terminalVelocity += accelRate * Time.deltaTime;
 		}
 
