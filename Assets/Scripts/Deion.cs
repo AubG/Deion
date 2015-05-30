@@ -13,6 +13,11 @@ public class Deion : MonoBehaviour {
 	float accelRate, accelConst = 25, terminalVelocity, constantTerminalV;
 	float angle;
 
+	private DIRECTION direction;
+	private enum DIRECTION{
+		left, right, up, down, left_up, left_down, right_up, right_down
+
+	};
 	void Start () {
 
 		north = Resources.Load("Sprites/Deion_North", typeof(Sprite)) as Sprite;
@@ -26,6 +31,7 @@ public class Deion : MonoBehaviour {
 
 		renderer = gameObject.GetComponent<SpriteRenderer>();
 		renderer.sprite = north;
+		direction = DIRECTION.up;
 
 		if(Input.GetJoystickNames().Length > 0){
 			Debug.Log ("It ain't zero");
@@ -37,7 +43,6 @@ public class Deion : MonoBehaviour {
 	}
 	public void moveRight(bool fromController, float angle){
 
-		Debug.Log ("Right");
 		if(!fromController){
 			this.angle = angle;
 		}
@@ -54,7 +59,6 @@ public class Deion : MonoBehaviour {
 
 	public void moveLeft(bool fromController, float angle){
 
-		Debug.Log ("Left");
 
 		if(!fromController){
 			this.angle = angle;
@@ -71,7 +75,6 @@ public class Deion : MonoBehaviour {
 	}
 
 	public void moveUp(bool fromController, float angle){
-		Debug.Log ("Up");
 
 		if(!fromController){
 			this.angle = angle;
@@ -87,7 +90,7 @@ public class Deion : MonoBehaviour {
 	}
 
 	public void moveDown(bool fromController, float angle){
-		Debug.Log ("Down");
+
 		if(!fromController){
 			this.angle = angle;
 		}
@@ -100,6 +103,7 @@ public class Deion : MonoBehaviour {
 			accelRate = accelConst;
 		
 	}
+
 
 	public void stopMoveX(){
 		stoppingX = true;
@@ -123,27 +127,99 @@ public class Deion : MonoBehaviour {
 
 
 	void controllerInput(){
-		float value = Input.GetAxis("Horizontal");
-		if(value < -.6f){
-			moveLeft (true, 0);
-		}else if(value > .6f){
-			moveRight (true, 0);
-		}else{
-			stopMoveX();
-		}
 
-		value = Input.GetAxis ("Vertical") * -1;
-		if(value < -.6f){
-			moveDown (true, 0);
-		}else if(value > .6f){
-			moveUp (true, 0);
-		}else{
-			stopMoveY();
-		}
+
+		float x = Input.GetAxis("Horizontal");
+
+		float y = Input.GetAxis ("Vertical") * -1;
+
+		moveOnAngle(y, x);
+
+
 
 		//Debug.Log (value);
 
 	}
+
+	void moveOnAngle(float y, float x){
+
+		if(Mathf.Abs(x) + Mathf.Abs(y) > 1){
+			angle = Mathf.Atan2 (y, x);
+			float inDegrees =  angle * 180 / Mathf.PI;
+
+			if(inDegrees < 22.5 && inDegrees > 337.5){
+				//Image should be right
+				if(direction != DIRECTION.right){
+					//animate right
+
+					direction = DIRECTION.right;
+				}
+
+
+			}else if(inDegrees > 22.5 && inDegrees < 67.5){
+				//Image should be right up
+				if(direction != DIRECTION.right_up){
+					//animate right up
+					direction = DIRECTION.right_up;
+				}
+			}else if(inDegrees > 67.5 && inDegrees < 112.5){
+
+				//Image should be up 
+				if(direction != DIRECTION.up){
+					//animate up
+					direction = DIRECTION.up;
+				}
+
+			}else if(inDegrees > 112.5 && inDegrees < 157.5){
+
+				//Image should be up left
+				if(direction != DIRECTION.left_up){
+					//animate left up
+
+					direction = DIRECTION.left_up;
+				}
+			}else if(inDegrees > 157.5 && inDegrees < 202.5){
+				//Image should be left
+
+				if(direction != DIRECTION.left){
+					//animate left
+
+
+					direction = DIRECTION.left;
+				}
+			}else if(inDegrees > 202.5 && inDegrees < 247.5){
+				//Image should be down left
+				if(direction != DIRECTION.left_down){
+					//animate left_down
+
+					direction = DIRECTION.left_down;
+				}
+			}else if(inDegrees > 247.5 && inDegrees < 292.5){
+				//Image should be down
+				if(direction != DIRECTION.down){
+					//animate down
+					direction = DIRECTION.down;
+				}
+			}else if(inDegrees > 292.5 && inDegrees < 337.5){
+				//Image should be down right
+
+				if(direction != DIRECTION.right_down){
+					//animate down right
+
+					direction = DIRECTION.right_down;
+				}
+			}
+
+			if(accelRate < 0)
+				accelRate = accelConst;
+		}else{
+			stopMoveX();
+			stopMoveY();
+		}
+
+
+	}
+	//if controller, pass control there, otherwise, keyboard input
 	void handleInput(){
 
 		if(usingController){
@@ -179,6 +255,7 @@ public class Deion : MonoBehaviour {
 				
 		}
 
+		//RIGHT ARROW
 		if(rightArrow && !leftArrow){
 
 				if(upArrow && !downArrow){
@@ -195,7 +272,7 @@ public class Deion : MonoBehaviour {
 				}
 		}
 
-		//Handle Left Arrow being down
+		//upArrow
 		if(upArrow && !downArrow){
 			
 			if(leftArrow && !rightArrow){
@@ -212,7 +289,8 @@ public class Deion : MonoBehaviour {
 				moveUp (false, Mathf.PI / 2);
 			}
 		}
-		
+
+		//DOWN ARROW
 		if(downArrow && !upArrow){
 			
 			if(leftArrow && !rightArrow){
@@ -232,7 +310,7 @@ public class Deion : MonoBehaviour {
 
 
 
-
+		//CHECK IF DEION SHOULD STOP MOVING
 		if((!rightArrow && !leftArrow) || (rightArrow && leftArrow)){
 			stopMoveX();
 		}
@@ -245,25 +323,7 @@ public class Deion : MonoBehaviour {
 	void Update () {
 
 		handleInput();
-
-
-
-		if(usingController){
-			float x = Input.GetAxis("Horizontal");
-			float y = Input.GetAxis("Vertical");
-
-			if(Mathf.Abs(x) + Mathf.Abs(y) > 1)
-			angle = Mathf.Atan2 (y * -1, x);
-
-			Debug.Log (angle);
-
-
-		}
-
-
-
-
-
+	
 		if(terminalVelocity < constantTerminalV || accelRate < 0){
 			terminalVelocity += accelRate * Time.deltaTime;
 		}
@@ -274,10 +334,7 @@ public class Deion : MonoBehaviour {
 
 		//Increase or slow velocity by acceleration
 		velocity = new Vector3(terminalVelocity * Mathf.Cos(angle), terminalVelocity * Mathf.Sin(angle), velocity.z);
-
-
-
-
+	
 		//Change the distance for this frame
 		transform.position = new Vector3(transform.position.x + velocity.x * Time.deltaTime, transform.position.y + velocity.y * Time.deltaTime, transform.position.z);
 
