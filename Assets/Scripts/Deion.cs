@@ -10,7 +10,7 @@ public class Deion : MonoBehaviour {
 	bool usingController;
 
 	Vector3 velocity;
-	float accelRate, terminalVelocity, constantTerminalV;
+	float accelRate, accelConst = 25, terminalVelocity, constantTerminalV;
 	float angle;
 
 	void Start () {
@@ -22,11 +22,16 @@ public class Deion : MonoBehaviour {
 		velocity = new Vector3();
 		terminalVelocity = 0;
 		constantTerminalV = 6;
-		accelRate = 15;
+		accelRate = accelConst;
 
 		renderer = gameObject.GetComponent<SpriteRenderer>();
 		renderer.sprite = north;
 
+		if(Input.GetJoystickNames().Length > 0){
+			Debug.Log ("It ain't zero");
+
+			usingController = true;
+		}
 		stoppingX = true;
 		stoppingY = true;
 	}
@@ -43,7 +48,7 @@ public class Deion : MonoBehaviour {
 		this.renderer.sprite = this.east;
 		
 		if(accelRate < 0)
-			accelRate *= -1;
+			accelRate = accelConst;
 
 	}
 
@@ -61,7 +66,7 @@ public class Deion : MonoBehaviour {
 		this.renderer.sprite = this.east;
 
 		if(accelRate < 0)
-			accelRate *= -1;
+			accelRate = accelConst;
 
 	}
 
@@ -77,7 +82,7 @@ public class Deion : MonoBehaviour {
 		this.renderer.sprite = this.north;
 		
 		if(accelRate < 0)
-			accelRate *= -1;
+			accelRate = accelConst;
 		
 	}
 
@@ -92,20 +97,20 @@ public class Deion : MonoBehaviour {
 		this.renderer.sprite = this.south;
 		
 		if(accelRate < 0)
-			accelRate *= -1;
+			accelRate = accelConst;
 		
 	}
 
 	public void stopMoveX(){
 		stoppingX = true;
 		if(stoppingX && stoppingY && accelRate > 0)
-			accelRate *= -1;
+			accelRate = -3 * accelConst;
 	}
 	public void stopMoveY(){
 		stoppingY = true;
 
 		if(stoppingX && stoppingY && accelRate > 0)
-			accelRate *= -1;
+			accelRate = -3 * accelConst;
 	}
 
 	public void flipX(bool facing){
@@ -117,12 +122,43 @@ public class Deion : MonoBehaviour {
 
 
 
+	void controllerInput(){
+		float value = Input.GetAxis("Horizontal");
+		if(value < -.6f){
+			moveLeft (true, 0);
+		}else if(value > .6f){
+			moveRight (true, 0);
+		}else{
+			stopMoveX();
+		}
+
+		value = Input.GetAxis ("Vertical") * -1;
+		if(value < -.6f){
+			moveDown (true, 0);
+		}else if(value > .6f){
+			moveUp (true, 0);
+		}else{
+			stopMoveY();
+		}
+
+		//Debug.Log (value);
+
+	}
 	void handleInput(){
+
+		if(usingController){
+			controllerInput();
+			return;
+		}
+
+
 		bool leftArrow, rightArrow, upArrow, downArrow;
 		leftArrow = Input.GetKey(KeyCode.LeftArrow);
 		rightArrow = Input.GetKey(KeyCode.RightArrow);
 		upArrow = Input.GetKey(KeyCode.UpArrow);
 		downArrow = Input.GetKey(KeyCode.DownArrow);
+
+
 
 		//Handle Left Arrow being down
 		if(leftArrow && !rightArrow){
@@ -139,6 +175,8 @@ public class Deion : MonoBehaviour {
 
 				moveLeft (false, Mathf.PI);
 			}
+
+				
 		}
 
 		if(rightArrow && !leftArrow){
@@ -210,12 +248,19 @@ public class Deion : MonoBehaviour {
 
 
 
-
-
-
 		if(usingController){
-	
+			float x = Input.GetAxis("Horizontal");
+			float y = Input.GetAxis("Vertical");
+
+			if(Mathf.Abs(x) + Mathf.Abs(y) > 1)
+			angle = Mathf.Atan2 (y * -1, x);
+
+			Debug.Log (angle);
+
+
 		}
+
+
 
 
 
