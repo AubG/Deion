@@ -5,6 +5,7 @@ public class Deion : MonoBehaviour {
 
 	Sprite north, south, east;
 	SpriteRenderer renderer;
+	Animator anim;
 
 	bool facingRight, facingNorth, stoppingX, stoppingY;
 	bool usingController;
@@ -19,6 +20,8 @@ public class Deion : MonoBehaviour {
 
 	};
 	void Start () {
+
+		anim = gameObject.GetComponent<Animator> ();
 
 		north = Resources.Load("Sprites/Deion_North", typeof(Sprite)) as Sprite;
 		south = Resources.Load("Sprites/Deion_South", typeof(Sprite)) as Sprite;
@@ -148,6 +151,8 @@ public class Deion : MonoBehaviour {
 			angle = Mathf.Atan2 (y, x);
 			float inDegrees =  angle * 180 / Mathf.PI;
 
+			anim.SetFloat("direction", inDegrees);
+
 			if(inDegrees < 22.5 && inDegrees > 337.5){
 				//Image should be right
 				if(direction != DIRECTION.right){
@@ -216,6 +221,7 @@ public class Deion : MonoBehaviour {
 		}else{
 			stopMoveX();
 			stopMoveY();
+			anim.SetFloat("direction", 0);
 		}
 
 
