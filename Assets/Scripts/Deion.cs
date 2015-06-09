@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Deion : MonoBehaviour {
 
+	public LayerMask obstructions;
 	Sprite north, south, east;
 	SpriteRenderer renderer;
 	Animator anim;
@@ -151,69 +152,79 @@ public class Deion : MonoBehaviour {
 			angle = Mathf.Atan2 (y, x);
 			float inDegrees =  angle * 180 / Mathf.PI;
 
-			anim.SetFloat("direction", inDegrees);
-
+			//Setting anim direction boolean variables
 			if(inDegrees < 22.5 && inDegrees > 337.5){
-				//Image should be right
-				if(direction != DIRECTION.right){
-					//animate right
-
-					direction = DIRECTION.right;
-				}
-
-
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", true);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", false);
 			}else if(inDegrees > 22.5 && inDegrees < 67.5){
-				//Image should be right up
-				if(direction != DIRECTION.right_up){
-					//animate right up
-					direction = DIRECTION.right_up;
-				}
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", true);
+				anim.SetBool("east", false);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", false);
 			}else if(inDegrees > 67.5 && inDegrees < 112.5){
-
-				//Image should be up 
-				if(direction != DIRECTION.up){
-					//animate up
-					direction = DIRECTION.up;
-				}
-
+				anim.SetBool("north", true);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", false);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", false);
 			}else if(inDegrees > 112.5 && inDegrees < 157.5){
-
-				//Image should be up left
-				if(direction != DIRECTION.left_up){
-					//animate left up
-
-					direction = DIRECTION.left_up;
-				}
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", false);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", true);
 			}else if(inDegrees > 157.5 && inDegrees < 202.5){
-				//Image should be left
-
-				if(direction != DIRECTION.left){
-					//animate left
-
-
-					direction = DIRECTION.left;
-				}
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", false);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", true);
+				anim.SetBool("northwest", false);
 			}else if(inDegrees > 202.5 && inDegrees < 247.5){
-				//Image should be down left
-				if(direction != DIRECTION.left_down){
-					//animate left_down
-
-					direction = DIRECTION.left_down;
-				}
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", false);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", true);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", false);
 			}else if(inDegrees > 247.5 && inDegrees < 292.5){
-				//Image should be down
-				if(direction != DIRECTION.down){
-					//animate down
-					direction = DIRECTION.down;
-				}
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", true);
+				anim.SetBool("southeast", false);
+				anim.SetBool("south", true);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", false);
 			}else if(inDegrees > 292.5 && inDegrees < 337.5){
-				//Image should be down right
-
-				if(direction != DIRECTION.right_down){
-					//animate down right
-
-					direction = DIRECTION.right_down;
-				}
+				anim.SetBool("north", false);
+				anim.SetBool("northeast", false);
+				anim.SetBool("east", false);
+				anim.SetBool("southeast", true);
+				anim.SetBool("south", false);
+				anim.SetBool("southwest", false);
+				anim.SetBool("west", false);
+				anim.SetBool("northwest", false);
 			}
 
 			if(accelRate < 0)
@@ -221,7 +232,6 @@ public class Deion : MonoBehaviour {
 		}else{
 			stopMoveX();
 			stopMoveY();
-			anim.SetFloat("direction", 0);
 		}
 
 
@@ -338,6 +348,8 @@ public class Deion : MonoBehaviour {
 		if(accelRate < 0 && terminalVelocity <= 0){
 			terminalVelocity = 0;
 		}
+
+		anim.SetFloat ("velocity", terminalVelocity);
 
 		//Increase or slow velocity by acceleration
 		velocity = new Vector3(terminalVelocity * Mathf.Cos(angle), terminalVelocity * Mathf.Sin(angle), velocity.z);
