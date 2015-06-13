@@ -15,10 +15,10 @@ public class CameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Vector3 newpos = player.transform.position;
-		transform.position = new Vector3(newpos.x, newpos.y, -10);
-		applyCameraEffects ();
+		transform.position = new Vector3(newpos.x, newpos.y, -20);
+		//applyCameraEffects ();
 
-		handleDebugInput ();
+		//handleDebugInput ();
 	}
 
 	void handleDebugInput(){

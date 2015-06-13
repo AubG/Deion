@@ -30,11 +30,11 @@ public class Deion : MonoBehaviour {
 
 		velocity = new Vector3();
 		terminalVelocity = 0;
-		constantTerminalV = 6;
+		constantTerminalV = 8;
 		accelRate = accelConst;
 
 		renderer = gameObject.GetComponent<SpriteRenderer>();
-		renderer.sprite = north;
+		//renderer.sprite = north;
 		direction = DIRECTION.up;
 
 		Debug.Log (Input.GetJoystickNames().Length);
@@ -55,7 +55,7 @@ public class Deion : MonoBehaviour {
 		flipX (true);
 		
 		stoppingX = false;
-		this.renderer.sprite = this.east;
+		//this.renderer.sprite = this.east;
 		
 		if(accelRate < 0)
 			accelRate = accelConst;
@@ -72,7 +72,7 @@ public class Deion : MonoBehaviour {
 		flipX (false);
 
 		stoppingX = false;
-		this.renderer.sprite = this.east;
+		//this.renderer.sprite = this.east;
 
 		if(accelRate < 0)
 			accelRate = accelConst;
@@ -87,7 +87,7 @@ public class Deion : MonoBehaviour {
 		
 
 		stoppingY = false;
-		this.renderer.sprite = this.north;
+		//this.renderer.sprite = this.north;
 		
 		if(accelRate < 0)
 			accelRate = accelConst;
@@ -102,7 +102,7 @@ public class Deion : MonoBehaviour {
 		
 
 		stoppingY = false;
-		this.renderer.sprite = this.south;
+		//this.renderer.sprite = this.south;
 		
 		if(accelRate < 0)
 			accelRate = accelConst;
@@ -152,7 +152,7 @@ public class Deion : MonoBehaviour {
 			angle = Mathf.Atan2 (y, x);
 			float inDegrees =  angle * 180 / Mathf.PI;
 
-			//Setting anim direction boolean variables
+		/*	//Setting anim direction boolean variables
 			if(inDegrees < 22.5 && inDegrees > 337.5){
 				anim.SetBool("north", false);
 				anim.SetBool("northeast", false);
@@ -227,6 +227,11 @@ public class Deion : MonoBehaviour {
 				anim.SetBool("northwest", false);
 			}
 
+*/
+			if(inDegrees < 0){
+				inDegrees = 180 + (180 + inDegrees);
+			}
+			anim.SetFloat("direction", inDegrees);
 			if(accelRate < 0)
 				accelRate = accelConst;
 		}else{
@@ -340,6 +345,7 @@ public class Deion : MonoBehaviour {
 	void Update () {
 
 		handleInput();
+
 	
 		if(terminalVelocity < constantTerminalV || accelRate < 0){
 			terminalVelocity += accelRate * Time.deltaTime;
