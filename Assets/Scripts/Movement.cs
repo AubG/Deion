@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Deion : MonoBehaviour {
+public class Movement : MonoBehaviour {
 
 	public LayerMask obstructions;
-	Sprite north, south, east;
 	SpriteRenderer renderer;
 	Animator anim;
 
@@ -24,9 +23,6 @@ public class Deion : MonoBehaviour {
 
 		anim = gameObject.GetComponent<Animator> ();
 
-		north = Resources.Load("Sprites/Deion_North", typeof(Sprite)) as Sprite;
-		south = Resources.Load("Sprites/Deion_South", typeof(Sprite)) as Sprite;
-		east = Resources.Load("Sprites/Deion_East", typeof(Sprite)) as Sprite;
 
 		velocity = new Vector3();
 		terminalVelocity = 0;
@@ -52,8 +48,7 @@ public class Deion : MonoBehaviour {
 			this.angle = angle;
 		}
 		
-		flipX (true);
-		
+
 		stoppingX = false;
 		//this.renderer.sprite = this.east;
 		
@@ -69,7 +64,6 @@ public class Deion : MonoBehaviour {
 			this.angle = angle;
 		}
 
-		flipX (false);
 
 		stoppingX = false;
 		//this.renderer.sprite = this.east;
@@ -87,8 +81,7 @@ public class Deion : MonoBehaviour {
 		
 
 		stoppingY = false;
-		//this.renderer.sprite = this.north;
-		
+
 		if(accelRate < 0)
 			accelRate = accelConst;
 		
@@ -122,14 +115,6 @@ public class Deion : MonoBehaviour {
 			accelRate = -3 * accelConst;
 	}
 
-	public void flipX(bool facing){
-		facingRight = facing;
-
-		if((facingRight && transform.localScale.x < 0) || (!facingRight && transform.localScale.x > 0))
-			transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-	}
-
-
 
 	void controllerInput(){
 
@@ -150,88 +135,7 @@ public class Deion : MonoBehaviour {
 
 		if(Mathf.Abs(x) + Mathf.Abs(y) > 1){
 			angle = Mathf.Atan2 (y, x);
-			float inDegrees =  angle * 180 / Mathf.PI;
 
-		/*	//Setting anim direction boolean variables
-			if(inDegrees < 22.5 && inDegrees > 337.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", true);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", false);
-			}else if(inDegrees > 22.5 && inDegrees < 67.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", true);
-				anim.SetBool("east", false);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", false);
-			}else if(inDegrees > 67.5 && inDegrees < 112.5){
-				anim.SetBool("north", true);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", false);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", false);
-			}else if(inDegrees > 112.5 && inDegrees < 157.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", false);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", true);
-			}else if(inDegrees > 157.5 && inDegrees < 202.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", false);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", true);
-				anim.SetBool("northwest", false);
-			}else if(inDegrees > 202.5 && inDegrees < 247.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", false);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", true);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", false);
-			}else if(inDegrees > 247.5 && inDegrees < 292.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", true);
-				anim.SetBool("southeast", false);
-				anim.SetBool("south", true);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", false);
-			}else if(inDegrees > 292.5 && inDegrees < 337.5){
-				anim.SetBool("north", false);
-				anim.SetBool("northeast", false);
-				anim.SetBool("east", false);
-				anim.SetBool("southeast", true);
-				anim.SetBool("south", false);
-				anim.SetBool("southwest", false);
-				anim.SetBool("west", false);
-				anim.SetBool("northwest", false);
-			}
-
-*/
-			if(inDegrees < 0){
-				inDegrees = 180 + (180 + inDegrees);
-			}
-			anim.SetFloat("direction", inDegrees);
 			if(accelRate < 0)
 				accelRate = accelConst;
 		}else{
@@ -346,6 +250,7 @@ public class Deion : MonoBehaviour {
 
 		handleInput();
 
+
 	
 		if(terminalVelocity < constantTerminalV || accelRate < 0){
 			terminalVelocity += accelRate * Time.deltaTime;
@@ -355,6 +260,15 @@ public class Deion : MonoBehaviour {
 			terminalVelocity = 0;
 		}
 
+
+		//Calculate angle in degrees for animator
+		float inDegrees =  angle * 180 / Mathf.PI;
+		if(inDegrees < 0){
+			inDegrees = 180 + (180 + inDegrees);
+		}
+
+		//Set the animation variable values
+		anim.SetFloat("direction", inDegrees);
 		anim.SetFloat ("velocity", terminalVelocity);
 
 		//Increase or slow velocity by acceleration
